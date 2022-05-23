@@ -38,7 +38,7 @@ extension URLSession.DataTaskPublisher {
     }
 }
 
-public struct FunAPIClient {
+public struct FunAPIClient: Equatable {
     
     static var systemName = "rocks.cihan.FunAPIClient"
     
@@ -83,9 +83,12 @@ public struct FunAPIClient {
             .dataTaskPublisher(for: urlRequest)
     }
     
-    func send<T: Decodable>(_ request: FunRequest.Endpoint, response: T.Type)  -> AnyPublisher<T, NSError> {
+    public func send<T: Decodable>(_ request: FunRequest.Endpoint, response: T.Type)  -> AnyPublisher<T, NSError> {
         
-        var urlRequest = URLRequest(url: URL(string: self.hostname + request.path)!)
+        var urlComponents = URLComponents(string: self.hostname + request.path)!
+        urlComponents.queryItems = request.queryItems
+        
+        var urlRequest = URLRequest(url: urlComponents.url!)
         urlRequest.httpMethod = request.httpMethod.rawValue
         
         if let bodyData = request.bodyData {
@@ -100,6 +103,8 @@ public struct FunAPIClient {
         for (key, value) in request.headers {
             urlRequest.setValue(value, forHTTPHeaderField: key)
         }
+        
+        
         
         return URLSession.shared
             .dataTaskPublisher(for: urlRequest)

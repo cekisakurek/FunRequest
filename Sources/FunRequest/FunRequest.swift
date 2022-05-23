@@ -30,7 +30,7 @@ public struct FunRequest {
             self.bodyEncoding = body
         }
         
-        mutating func addHeader(_ header: HTTPHeader) {
+        mutating public func addHeader(_ header: HTTPHeader) {
             
             switch header {
             case .accept(let string):
@@ -44,11 +44,11 @@ public struct FunRequest {
             }
         }
         
-        mutating func addHeader(_ key: String, value: String) {
+        mutating public func addHeader(_ key: String, value: String) {
             self.headers[key] = value
         }
         
-        mutating func setRequestBody<T: Encodable>(_ body: T, encoding: BodyEncoding) throws {
+        mutating public func setRequestBody<T: Encodable>(_ body: T, encoding: BodyEncoding) throws {
             let data = try JSONEncoder().encode(body)
             self.bodyData = data
         }
